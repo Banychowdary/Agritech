@@ -1,0 +1,154 @@
+#include <softwareSerial.h>
+#include <Liquidcrystal_12C.h>
+#include <Wire.h>
+int i;
+LiquidCrystal_l2clcd(16,2);
+
+eiver or Transmitter mode 
+const byte nitro[] = {0x01,0x03, 0x00, 0x1e, 0x00, 0x01, 0xe4, 0x0c};
+const byte phos[] = {0x01,0x03, 0x00, 0x1f, 0x00, 0x01, 0xb5, 0xcc};
+const byte pota[] = {0x01,0x03, 0x00, 0x20, 0x00, 0x01, 0x85, 0xc0};
+byte values[11];
+int moisture;
+Softwareserial
+mod(2,3);
+void setup()
+{
+lcd.init();
+lcd.backlight();
+serial.begin(9600);
+
+pinMode(RE,OUTPUT);   //Resiver enable 
+PinMode(DE,OUTPUT);    //Driver enable
+pinMode(A1,INPUT);
+pinMode(13,OUTPUT);
+delay(500);
+lcd.clear();
+lcd.setcursor(4,1);
+lcd.print("Woxsen")
+delay(4000)
+lcd.clear()
+lcd.setcursor(0,0);
+lcd.print("Bany Sakshi");
+lcd.setcursor(0,1);
+lcd.print("ARYAN HARI")
+delay(5000
+
+}
+
+void loop()
+{
+byte val1,val2,val3;
+val1= Nitrogen();
+delay(250);
+val2= Phosophorous();
+delay(250);
+val3= Potassium();
+delay(250);
+moisture= analogRead(A1);
+
+Serial.print("Nitrogen: ");
+Serial.print(val1);
+Serial.println("mg/kg");
+
+Serial.print("Phosphorous: ");
+Serial.print(val2);
+Serial.println("mg/kg");
+
+Serial.print("Potassium: ");
+Serial.print(val3);
+Serial.println("mg/kg");
+
+lcd.clear();
+lcd.setCursor(0,0);
+lcd.print("N: ");
+lcd.print(val1);
+lcd.print(" mg/kg");
+delay(2000);
+lcd.clear();
+lcd.setCursor(0,0);
+lcd.print("P: ");
+lcd.print(val2);
+lcd.print(" mg/kg");
+delay(2000);
+lcd.clear();
+lcd.setCursor(0,0);
+lcd.print("K: ");
+lcd.print(val3);
+lcd.print(" mg/kg");
+
+if(moisture>500)
+  {
+    digitalWrite(13,HIGH);
+    lcd.setCursor(0,1);
+    lcd.print("THE MOTOR is  ON");
+  }
+  else{
+    digitalWrite(13,LOW);
+    lcd.setCursor(0,1);
+    lcd.print("THE MOTOR is OFF");
+  }
+  delay(2000);
+}
+byte nitrogen(){
+  digitalWrite(DE,HIGH);
+  digitalWrite(RE,HIGH);
+  delay(10);
+  if(mod.write(nitro,sizeof(nitro))==8){
+    digitalWrite(DE,LOW); //driver enable 
+    digitalWrite(RE,LOW); //reciever enable 
+    for(byte i=0;i<7;i++)
+    {
+    values[i] = mod.read();
+    Serial.print(values[i],HEX);
+    }
+    Serial.println();
+  }
+  return values[4];
+}
+ 
+byte phosphorous(){
+  digitalWrite(DE,HIGH);
+  digitalWrite(RE,HIGH);
+  delay(10);
+  if(mod.write(phos,sizeof(phos))==8)
+  {
+    digitalWrite(DE,LOW); //driver enable 
+    digitalWrite(RE,LOW); //reciever enable 
+    for(byte i=0;i<7;i++)
+    {
+    values[i] = mod.read();
+    Serial.print(values[i],HEX);
+    }
+    Serial.println();
+  }
+  return values[4];
+}
+ 
+byte potassium(){
+  digitalWrite(DE,HIGH); //driver enable 
+  digitalWrite(RE,HIGH); //reciever enable 
+  delay(10);
+  if(mod.write(pota,sizeof(pota))==8){
+    digitalWrite(DE,LOW); //reciever enable 
+    digitalWrite(RE,LOW); //driver enable 
+    for(byte i=0;i<7;i++)
+    {
+    values[i] = mod.read();
+    Serial.print(values[i],HEX);
+    }
+    Serial.println();
+  }
+  return values[4];
+}
+
+ 
+
+
+
+
+
+
+
+
+
